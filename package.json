@@ -1,0 +1,25 @@
+{
+    "name": "tuiter",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "dev": "./node_modules/.bin/nodemon app.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "apollo-server": "3.6.2",
+        "bcrypt": "5.0.0",
+        "dotenv": "14.2.0",
+        "graphql": "16.2.0",
+        "mongoose": "^6.1.7"
+    },
+    "devDependencies": {
+        "eslint": "8.7.0",
+        "nodemon": "2.0.15"
+    }
+}
