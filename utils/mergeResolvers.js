@@ -13,32 +13,3 @@ export const mergeResolvers = (target, resolvers) => {
     });
     return target;
 };
-/* 
-    [
-        {
-            Query: {
-
-            },
-            Mutation: {
-
-            }
-        },
-        {
-            Query: {
-
-            },
-            Mutation: {
-
-            }
-        },
-    ]
-
-    {
-        Query: {
-
-        },
-        Mutation: {
-
-        }
-    }
-*/

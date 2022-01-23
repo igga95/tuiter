@@ -38,6 +38,7 @@ const resolvers = mergeResolvers({}, [userResolvers, tuitResolvers]);
 const server = new ApolloServer({
     typeDefs: [baseTypeDefs, userTypeDef, tuitTypeDef],
     resolvers,
+    debug: true,
 });
 
 // The `listen` method launches a web server.
