@@ -36,12 +36,6 @@ const userSchema = new Schema({
             ref: "User",
         },
     ],
-    likes: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Like",
-        },
-    ],
 });
 
 export default mongoose.model("User", userSchema);

@@ -107,15 +107,5 @@ export const userResolvers = {
 
             return user;
         },
-
-        // likeTuit: async (root, args, { currentUser }) => {
-        //     if (!currentUser) throw new AuthenticationError("Not logged in");
-        //     const { id: tuitId } = args;
-
-        //     const tuit = await Tuit.findOne({ _id: tuitId });
-        //     if (!tuit) throw new UserInputError("Tuit does not exist", { invalidArgs: args });
-
-        //     const like = new Like({ user: currentUser.id, tuit: tuit._id });
-        // },
     },
 };

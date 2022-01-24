@@ -8,7 +8,6 @@ export const userTypeDef = gql`
         tuits: [Tuit]!
         follows: [User]!
         followers: [User]!
-        likes: [Like]!
     }
 
     type Token {

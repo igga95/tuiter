@@ -12,12 +12,6 @@ const tuitSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
-    likes: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Like",
-        },
-    ],
 });
 
 export default mongoose.model("Tuit", tuitSchema);
