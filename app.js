@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { ApolloServer, gql, UserInputError } from "apollo-server";
+import { ApolloServer, AuthenticationError, gql } from "apollo-server";
 import "./db.js";
 
 import { userTypeDef } from "./typedef/users.js";
@@ -7,6 +7,7 @@ import { tuitTypeDef } from "./typedef/tuits.js";
 import { userResolvers } from "./resolvers/users.js";
 import { tuitResolvers } from "./resolvers/tuits.js";
 import { mergeResolvers } from "./utils/mergeResolvers.js";
+import { context } from "./context/context.js";
 
 // import User from "./models/user.js";
 // import Tuit from "./models/tuit.js";
@@ -38,6 +39,17 @@ const resolvers = mergeResolvers({}, [userResolvers, tuitResolvers]);
 const server = new ApolloServer({
     typeDefs: [baseTypeDefs, userTypeDef, tuitTypeDef],
     resolvers,
+    context,
+    formatError: (err) => {
+        // Don't give the specific errors to the client.
+        if (err.message.startsWith("Context creation failed: ")) {
+            console.log(err);
+            return new AuthenticationError("Authorization failed", { invalidArgs: err.extensions.invalidArgs });
+        }
+        // Otherwise return the original error. The error can also
+        // be manipulated in other ways, as long as it's returned.
+        return err;
+    },
     debug: true,
 });
 

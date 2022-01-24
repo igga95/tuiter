@@ -8,6 +8,7 @@ export const userTypeDef = gql`
         tuits: [Tuit]!
         follows: [User]!
         followers: [User]!
+        likes: [Like]!
     }
 
     type Token {
@@ -23,6 +24,7 @@ export const userTypeDef = gql`
     extend type Mutation {
         createUser(username: String!, name: String!, password: String!): User
         login(username: String!, password: String!): Token
-        addFollow(id: ID!, username: String!): User
+        followUser(username: String!): User
+        unfollowUser(username: String!): User
     }
 `;

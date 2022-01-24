@@ -4,7 +4,8 @@ export const tuitTypeDef = gql`
     type Tuit {
         id: ID!
         content: String!
-        user: User
+        user: User!
+        likes: [Likes]!
     }
 
     extend type Query {
