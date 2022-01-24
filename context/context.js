@@ -14,7 +14,7 @@ export const context = async ({ req }) => {
         } catch (err) {
             throw new AuthenticationError("Authorization failed", { invalidArgs: token });
         }
-        const currentUser = await User.findOne({ _id: decodedData.id }).populate("tuits").populate("follows").populate("followers").populate("likes");
-        return { currentUser };
+        const user = await User.findOne({ _id: decodedData.id }).populate("tuits").populate("follows").populate("followers").populate("likes");
+        return { user };
     }
 };

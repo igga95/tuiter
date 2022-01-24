@@ -5,7 +5,7 @@ export const tuitTypeDef = gql`
         id: ID!
         content: String!
         user: User!
-        likes: [Likes]!
+        likes: [Like]!
     }
 
     extend type Query {
@@ -14,5 +14,6 @@ export const tuitTypeDef = gql`
 
     extend type Mutation {
         addTuit(content: String!): Tuit
+        likeTuit(id: ID!): Tuit
     }
 `;

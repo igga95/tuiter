@@ -1,10 +1,13 @@
 import "dotenv/config";
 import { ApolloServer, AuthenticationError, gql } from "apollo-server";
 import "./db.js";
+import "./models/user.js";
+import "./models/tuit.js";
+import "./models/like.js";
 
 import { userTypeDef } from "./typedef/users.js";
 import { tuitTypeDef } from "./typedef/tuits.js";
-// import { likeTypeDef } from "./typedef/likes.js";
+import { likeTypeDef } from "./typedef/likes.js";
 import { userResolvers } from "./resolvers/users.js";
 import { tuitResolvers } from "./resolvers/tuits.js";
 import { mergeResolvers } from "./utils/mergeResolvers.js";
@@ -38,7 +41,7 @@ const resolvers = mergeResolvers({}, [userResolvers, tuitResolvers]);
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
 const server = new ApolloServer({
-    typeDefs: [baseTypeDefs, userTypeDef, tuitTypeDef],
+    typeDefs: [baseTypeDefs, userTypeDef, tuitTypeDef, likeTypeDef],
     resolvers,
     context,
     formatError: (err) => {

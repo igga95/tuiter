@@ -26,6 +26,5 @@ export const userTypeDef = gql`
         login(username: String!, password: String!): Token
         followUser(username: String!): User
         unfollowUser(username: String!): User
-        likeTuit:(id: ID!): Tuit
     }
 `;
