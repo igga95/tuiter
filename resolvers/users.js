@@ -63,8 +63,9 @@ export const userResolvers = {
             const userToFollow = await User.findOne({ username: usernameToFollow }).populate("followers");
             if (!userToFollow) throw new UserInputError("Field username not valid", { invalidArgs: args });
 
-            const user = await User.findOne({ _id: currentUser.id }).populate("follows");
-            if (!user) throw new UserInputError(`User with id (${id}) not valid`, { invalidArgs: id });
+            // const user = await User.findOne({ _id: currentUser.id }).populate("follows");
+            // if (!user) throw new UserInputError(`User with id (${id}) not valid`, { invalidArgs: id });
+            const user = { ...currentUser };
 
             if (!user.follows.find((el) => el.username === userToFollow.username)) {
                 userToFollow.followers = userToFollow.followers.concat(user);
@@ -88,8 +89,10 @@ export const userResolvers = {
             const userToUnfollow = await User.findOne({ username: usernameToUnfollow }).populate("followers");
             if (!userToUnfollow) throw new UserInputError("Field username not valid", { invalidArgs: args });
 
-            const user = await User.findOne({ _id: currentUser.id }).populate("follows");
-            if (!user) throw new UserInputError(`User with id (${id}) not valid`, { invalidArgs: id });
+            // const user = await User.findOne({ _id: currentUser.id }).populate("follows");
+            // if (!user) throw new UserInputError(`User with id (${id}) not valid`, { invalidArgs: id });
+
+            const user = { ...currentUser };
 
             const indexToUnfollow = user.follows.findIndex((el) => el.username === userToUnfollow.username);
             if (indexToUnfollow !== -1) {
@@ -108,14 +111,14 @@ export const userResolvers = {
             return user;
         },
 
-        // likeTuit: async (root, args, { currentUser }) => {
-        //     if (!currentUser) throw new AuthenticationError("Not logged in");
-        //     const { id: tuitId } = args;
+        likeTuit: async (root, args, { currentUser }) => {
+            if (!currentUser) throw new AuthenticationError("Not logged in");
+            const { id: tuitId } = args;
 
-        //     const tuit = await Tuit.findOne({ _id: tuitId });
-        //     if (!tuit) throw new UserInputError("Tuit does not exist", { invalidArgs: args });
+            const tuit = await Tuit.findOne({ _id: tuitId });
+            if (!tuit) throw new UserInputError("Tuit does not exist", { invalidArgs: args });
 
-        //     const like = new Like({ user: currentUser.id, tuit: tuit._id });
-        // },
+            const like = new Like({ user: currentUser.id, tuit: tuit._id });
+        },
     },
 };

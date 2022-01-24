@@ -8,15 +8,13 @@ export const context = async ({ req }) => {
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.toLowerCase().startsWith("bearer ")) {
         const token = auth.substring(7);
-        let currentUser = null;
+        let decodedData = null;
         try {
-            currentUser = jwt.verify(token, JWT_SECRET);
+            decodedData = jwt.verify(token, JWT_SECRET);
         } catch (err) {
             throw new AuthenticationError("Authorization failed", { invalidArgs: token });
         }
+        const currentUser = await User.findOne({ _id: decodedData.id }).populate("tuits").populate("follows").populate("followers").populate("likes");
         return { currentUser };
-        // const currentUser = User.findOne({ _id: id });
-        // return { id };
-        // const currentUser = User.findOne({ _id: dataDecoded.id }).populate("tuits").populate("follows").populate("followers").populate("likes");
     }
 };

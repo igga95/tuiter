@@ -4,6 +4,7 @@ import "./db.js";
 
 import { userTypeDef } from "./typedef/users.js";
 import { tuitTypeDef } from "./typedef/tuits.js";
+// import { likeTypeDef } from "./typedef/likes.js";
 import { userResolvers } from "./resolvers/users.js";
 import { tuitResolvers } from "./resolvers/tuits.js";
 import { mergeResolvers } from "./utils/mergeResolvers.js";
