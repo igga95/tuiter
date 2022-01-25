@@ -5,15 +5,19 @@ export const tuitTypeDef = gql`
         id: ID!
         content: String!
         user: User!
-        likes: [Like]!
+        likes: [User]!
     }
 
     extend type Query {
         getTuit(id: ID!): Tuit
+        getQtyLikes(id: ID!): Int!
+        getLikes(id: ID!): [User]
     }
 
     extend type Mutation {
         addTuit(content: String!): Tuit
+        # removeTuit(id: ID!): Tuit
         likeTuit(id: ID!): Tuit
+        # unlikeTuit(id: ID!): Tuit
     }
 `;

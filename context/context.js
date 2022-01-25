@@ -12,9 +12,9 @@ export const context = async ({ req }) => {
         try {
             decodedData = jwt.verify(token, JWT_SECRET);
         } catch (err) {
-            throw new AuthenticationError("Authorization failed", { invalidArgs: token });
+            throw new AuthenticationError("Authentication failed", { invalidArgs: token });
         }
-        const user = await User.findOne({ _id: decodedData.id }).populate("tuits").populate("follows").populate("followers").populate("likes");
+        const user = await User.findOne({ _id: decodedData.id }).populate("tuits").populate("follows").populate("followers").populate("likedTuits");
         return { user };
     }
 };

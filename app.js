@@ -3,11 +3,9 @@ import { ApolloServer, AuthenticationError, gql } from "apollo-server";
 import "./db.js";
 import "./models/user.js";
 import "./models/tuit.js";
-import "./models/like.js";
 
 import { userTypeDef } from "./typedef/users.js";
 import { tuitTypeDef } from "./typedef/tuits.js";
-import { likeTypeDef } from "./typedef/likes.js";
 import { userResolvers } from "./resolvers/users.js";
 import { tuitResolvers } from "./resolvers/tuits.js";
 import { mergeResolvers } from "./utils/mergeResolvers.js";
@@ -41,14 +39,14 @@ const resolvers = mergeResolvers({}, [userResolvers, tuitResolvers]);
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
 const server = new ApolloServer({
-    typeDefs: [baseTypeDefs, userTypeDef, tuitTypeDef, likeTypeDef],
+    typeDefs: [baseTypeDefs, userTypeDef, tuitTypeDef],
     resolvers,
     context,
     formatError: (err) => {
         // Don't give the specific errors to the client.
         if (err.message.startsWith("Context creation failed: ")) {
             console.log(err);
-            return new AuthenticationError("Authorization failed", { invalidArgs: err.extensions.invalidArgs });
+            return new AuthenticationError("Authentication failed", { invalidArgs: err.extensions.invalidArgs });
         }
         // Otherwise return the original error. The error can also
         // be manipulated in other ways, as long as it's returned.
@@ -59,5 +57,5 @@ const server = new ApolloServer({
 
 // The `listen` method launches a web server.
 server.listen({ port: 4001 }).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
+    console.log(`Server ready at ${url}`);
 });

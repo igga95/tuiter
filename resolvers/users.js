@@ -3,22 +3,25 @@ import Tuit from "../models/tuit.js";
 import bcrypt from "bcrypt";
 import { UserInputError, AuthenticationError } from "apollo-server";
 import jwt from "jsonwebtoken";
+import { PossibleFragmentSpreadsRule } from "graphql";
+
+const findOneUserAndCheck = async (username) => {
+    const user = await User.findOne({ username });
+    if (!user) UserInputError("User does not exist", { invalidArgs: args });
+    return user;
+};
 
 export const userResolvers = {
     Query: {
         getAllUsers: async () => {
             // Not error handler needed because if there are no documents, .find() will return empty array.
-            const users = await User.find({}).populate("tuits").populate("follows").populate("followers").populate("likes");
+            const users = await User.find({}).populate("tuits").populate("follows").populate("followers").populate("likedTuits");
             return users;
         },
 
         getUser: async (root, args) => {
-            try {
-                const user = await User.findById(args.id).populate("tuits");
-                return user;
-            } catch {
-                throw new UserInputError("Field id malform", { invalidArgs: args });
-            }
+            const user = await User.findOne({ username: args.username }).populate("tuits").populate("follows").populate("followers").populate("likedTuits");
+            return user;
         },
 
         me: async (root, args, context) => {
@@ -26,11 +29,47 @@ export const userResolvers = {
             if (!user) throw new AuthenticationError("Not logged in");
             return user;
         },
+
+        getQtyTuits: async (root, args) => {
+            const user = await findOneUserAndCheck(args.username);
+            return user.tuits.length;
+        },
+
+        getFollows: async (root, args) => {
+            const user = await User.findOne({ username: args.username }).populate("follows");
+            if (!user) UserInputError("User does not exist", { invalidArgs: args });
+            return user.follows;
+        },
+
+        getQtyFollows: async (root, args) => {
+            const user = await findOneUserAndCheck(args.username);
+            return user.follows.length;
+        },
+
+        getFollowers: async (root, args) => {
+            const user = await User.findOne({ username: args.username }).populate("followers");
+            if (!user) UserInputError("User does not exist", { invalidArgs: args });
+            return user.followers;
+        },
+
+        getQtyFollowers: async (root, args) => {
+            const user = await findOneUserAndCheck(args.username);
+            return user.followers.length;
+        },
+
+        getLikedTuits: async (root, args) => {
+            const user = await findOneUserAndCheck(args.username);
+            // const user = await User.findOne({ username: args.username }).populate("likedTuits").populate("user");
+            console.log(user.likedTuits);
+            const tuits = await Tuit.find({ _id: { $in: user.likedTuits } }).populate("user");
+            console.log(tuits);
+            return tuits;
+        }, // this has to be re-done
     },
 
     Mutation: {
         createUser: async (root, args) => {
-            if (await User.findOne({ username: args.username })) throw new UserInputError("Field username has to be unique");
+            if (await User.findOne({ username: args.username })) throw new UserInputError("Field username has to be unique", { invalidArgs: args });
 
             const saltRounds = 10;
             const passwordHash = await bcrypt.hash(args.password, saltRounds);
@@ -64,16 +103,12 @@ export const userResolvers = {
             const userToFollow = await User.findOne({ username: usernameToFollow }).populate("followers");
             if (!userToFollow) throw new UserInputError("Field username not valid", { invalidArgs: args });
 
-            // const user = await User.findOne({ _id: user.id }).populate("follows");
-            // if (!user) throw new UserInputError(`User with id (${id}) not valid`, { invalidArgs: id });
-
             if (!user.follows.find((el) => el.username === userToFollow.username)) {
                 userToFollow.followers = userToFollow.followers.concat(user);
                 user.follows = user.follows.concat(userToFollow);
 
                 try {
-                    await userToFollow.save();
-                    await user.save();
+                    await Promise.all([userToFollow.save(), user.save()]);
                 } catch (err) {
                     throw new UserInputError(err.message, { invalidArgs: args });
                 }
@@ -90,9 +125,6 @@ export const userResolvers = {
             const userToUnfollow = await User.findOne({ username: usernameToUnfollow }).populate("followers");
             if (!userToUnfollow) throw new UserInputError("Field username not valid", { invalidArgs: args });
 
-            // const user = await User.findOne({ _id: user.id }).populate("follows");
-            // if (!user) throw new UserInputError(`User with id (${id}) not valid`, { invalidArgs: id });
-
             const indexToUnfollow = user.follows.findIndex((el) => el.username === userToUnfollow.username);
             if (indexToUnfollow !== -1) {
                 user.follows.splice(indexToUnfollow, 1);
@@ -100,8 +132,7 @@ export const userResolvers = {
                 userToUnfollow.followers.splice(indexUnfollower, 1);
 
                 try {
-                    await userToUnfollow.save();
-                    await user.save();
+                    await Promise.all([userToUnfollow.save(), user.save()]);
                 } catch (err) {
                     throw new UserInputError(err.message, { invalidArgs: args });
                 }

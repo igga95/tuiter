@@ -8,7 +8,7 @@ export const userTypeDef = gql`
         tuits: [Tuit]!
         follows: [User]!
         followers: [User]!
-        likes: [Like]!
+        likedTuits: [Tuit]!
     }
 
     type Token {
@@ -17,8 +17,14 @@ export const userTypeDef = gql`
 
     extend type Query {
         getAllUsers: [User]
-        getUser(id: ID!): User
+        getUser(username: String!): User
         me: User!
+        getQtyTuits(username: String!): Int!
+        getFollows(username: String!): [User]
+        getQtyFollows(username: String!): Int!
+        getFollowers(username: String!): [User]
+        getQtyFollowers(username: String!): Int!
+        getLikedTuits(username: String!): [Tuit]
     }
 
     extend type Mutation {

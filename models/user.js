@@ -16,7 +16,6 @@ const userSchema = new Schema({
     passwordHash: {
         type: String,
         required: true,
-        minlength: 4,
     },
     tuits: [
         {
@@ -36,10 +35,10 @@ const userSchema = new Schema({
             ref: "User",
         },
     ],
-    likes: [
+    likedTuits: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Like",
+            ref: "Tuit",
         },
     ],
 });
