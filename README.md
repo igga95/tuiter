@@ -1,5 +1,5 @@
 # tuITer (Incomplete!)
-## Proyect for personal portfolio.
+## Personal portfolio proyect.
 
 ### Twitter like funcional app focused on technology 
 
